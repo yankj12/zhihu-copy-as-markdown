@@ -158,6 +158,54 @@ const main = async () => {
 
 
 			// 复制为Markdown
+			const ButtonCopyMarkdownLink = MakeButton();
+			ButtonCopyMarkdownLink.innerHTML = "复制md链接";
+			ButtonCopyMarkdownLink.style.borderRadius = "0 0 0 0";
+			ButtonCopyMarkdownLink.style.paddingLeft = ".4em";
+			ButtonContainer.prepend(ButtonCopyMarkdownLink);
+
+			ButtonCopyMarkdownLink.addEventListener("click", () => {
+				try {
+					let markdownLink = '';
+					let newUrl = '';
+					let newTitle = '';
+
+					// 根据result类型拼接url，并转换为markdown格式链接
+					if(result.question){
+						// 是问题
+						// 曾国藩不反清是什么原因导致的？ - 正义骑士团的回答 - 知乎
+						// https://www.zhihu.com/question/560253407/answer/3139548615
+						const url = location.href;
+						const pos = url.indexOf('/answer/');
+						newUrl = url.substring(0, pos) + '/answer/' + result.itemId;
+						newTitle = result.title;
+					}else{
+						// 不是问题
+						// 专栏文章链接格式
+						// YesPlayMusic - 29k star 的开源网易云客户端，你绝对不要错过 - 开源小分队的文章 - 知乎
+						// https://zhuanlan.zhihu.com/p/1923833555
+						newUrl = location.href;
+						newTitle = result.title;
+					}
+					markdownLink = '[' + newTitle + '](' + location.href + ')';
+
+					navigator.clipboard.writeText(markdownLink);
+					ButtonCopyMarkdownLink.innerHTML = "复制成功✅";
+					setTimeout(() => {
+						ButtonCopyMarkdownLink.innerHTML = "复制md链接";
+					}, 1000);
+				} catch {
+					ButtonCopyMarkdownLink.innerHTML = "发生未知错误<br>请联系开发者";
+					ButtonCopyMarkdownLink.style.height = "4em";
+					setTimeout(() => {
+						ButtonCopyMarkdownLink.style.height = "2em";
+						ButtonCopyMarkdownLink.innerHTML = "复制md链接";
+					}, 1000);
+				}
+			});
+
+
+			// 复制为Markdown
 			const ButtonCopyMarkdown = MakeButton();
 			ButtonCopyMarkdown.innerHTML = "复制为Markdown";
 			ButtonCopyMarkdown.style.borderRadius = "1em 0 0 1em";
